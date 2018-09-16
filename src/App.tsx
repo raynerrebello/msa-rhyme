@@ -1,42 +1,52 @@
 import * as React from 'react';
-import Button from '@material-ui/core/Button';
-import Input from '@material-ui/core/Input';
-import Typography from '@material-ui/core/Typography';
-import { Theme } from '@material-ui/core/styles/createMuiTheme';
+
 import createStyles from '@material-ui/core/styles/createStyles';
 import withStyles, { WithStyles } from '@material-ui/core/styles/withStyles';
 import withRoot from './withRoot';
 
+import { Button, Input, Typography } from '@material-ui/core';
+import { Theme } from '@material-ui/core/styles/createMuiTheme';
+
 const styles = (theme: Theme) =>
   createStyles({
-    root: {
-      textAlign: 'center',
-      paddingTop: theme.spacing.unit * 20,
-      paddingBottom: theme.spacing.unit * 40,
-      padding: theme.spacing.unit * 50,
-      margin: theme.spacing.unit
+    button:{
+      margin: theme.spacing.unit * 10
     },
-
+    info:{
+      margin: theme.spacing.unit * 10
+    },
+    output:{
+      margin: theme.spacing.unit * 10
+    },
+    root: {
+      margin: theme.spacing.unit,
+      paddingTop: theme.spacing.unit * 10,
+      textAlign: 'center'
+    }
   });
 
-type State = {
+interface IState {
   shown: string;
   entered: string;
 };
 
-class App extends React.Component<WithStyles<typeof styles>, State> {
-  state = {
-    shown: '',
-    entered: ''
-  };
+class App extends React.Component<WithStyles<typeof styles>, IState> {
+  
+  constructor(props: any){
+    super(props);
+    this.state = {
+      entered: '',
+      shown: ''
+    };
+  }
 
-  handleClick = () => {
+  public handleClick = () => {
     if (this.state.entered.length > 0) {
       this.getRhyme();
     }
   };
 
-  getRhyme = () => {
+  public getRhyme = () => {
     fetch('https://api.datamuse.com/words?rel_rhy=' + this.state.entered)
     .then((response: Response) => {
       if (response.ok) {
@@ -44,42 +54,54 @@ class App extends React.Component<WithStyles<typeof styles>, State> {
       } else {
         return Promise.reject('Request failed idiot.');
       }
-    }).then((results: Object) => {
+    }).then((results: object) => {
        this.setState({shown: results[0].word});
     }).catch((error: Error) => {
       this.setState({shown: 'A rhyme can\'t be found for ' + this.state.entered + ' please try another word.'});
     });
   }
 
-  handleTyping = (event: React.ChangeEvent<HTMLInputElement>) => {
+  public handleTyping = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({entered: event.target.value});
   }
 
-  render() {
+  public render() {
     return (
       <div className={this.props.classes.root}>
-        <Typography variant="display1" gutterBottom>
+
+        <div className= {this.props.classes.info}>
+        <Typography variant="display1" gutterBottom={false}>
           Word Rhymer
         </Typography>
-        <Typography variant="subheading" gutterBottom>
+        <Typography variant="subheading" gutterBottom={false}>
           MSA 2018
         </Typography>
+        </div>
+
         <Input
           placeholder="Enter word you wish to rhyme"
           fullWidth={true}
           onChange={this.handleTyping}
         />
+
+        <div className={this.props.classes.button}>
         <Button variant="raised" color="secondary" onClick={this.handleClick}>
           Rhyme
         </Button>
-        <Typography variant="body1" gutterBottom>
+        </div>
+
+        <div className={this.props.classes.output}>
+        <Typography variant="body1" gutterBottom={false}>
           {this.state.shown}
         </Typography>
+        </div>
+
       </div>
 
     );
   }
+
 }
 
-export default withRoot(withStyles(styles)(Index));
+export default withRoot(withStyles(styles)(App));
 

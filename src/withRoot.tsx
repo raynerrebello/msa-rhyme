@@ -1,7 +1,11 @@
 import * as React from 'react';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+
 import purple from '@material-ui/core/colors/red';
+
 import green from '@material-ui/core/colors/green';
+
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 const theme = createMuiTheme({
